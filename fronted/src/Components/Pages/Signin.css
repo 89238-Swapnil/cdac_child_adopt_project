@@ -1,0 +1,87 @@
+/* Reuses SignupPage.css styles */
+
+.signin-wrapper {
+  max-width: 500px;
+  margin: 50px auto;
+  padding: 30px;
+  background-color: #f9f9f9;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  font-family: Arial, sans-serif;
+}
+
+.signin-form {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-title {
+  font-size: 1.8rem;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.role-selection {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.role-selection label {
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.form-field {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 16px;
+}
+
+.form-field label {
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+.form-field input {
+  padding: 10px;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  transition: border-color 0.3s ease;
+}
+
+.form-field input:focus {
+  border-color: #0070f3;
+  outline: none;
+}
+
+.toggle-password {
+  margin-top: 6px;
+  font-size: 0.85rem;
+  color: #0070f3;
+  cursor: pointer;
+  align-self: flex-end;
+}
+
+.error-text {
+  color: #e63946;
+  font-size: 0.875rem;
+  margin-bottom: 10px;
+}
+
+.submit-button {
+  background-color: #0070f3;
+  color: white;
+  padding: 12px;
+  font-size: 1rem;
+  font-weight: bold;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.submit-button:hover {
+  background-color: #005bb5;
+}

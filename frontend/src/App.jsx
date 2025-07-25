@@ -2,6 +2,7 @@ import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import 'bootstrap/dist/css/bootstrap.css';
 //import OrphanageDetails from '../../Components/Details/OrphanageDetails';
+import AdoptionForm from './Components/Form/AdoptionForm'; // Adjust path based on your folder structure
 
 // Components
 import Navbar from "./Components/Navbar";
@@ -40,6 +41,7 @@ const App = () => {
             <Route path="/signin" element={<SignIn />} />
             
         <Route path="/children-list" element={<ChildrenList />} />
+        <Route path="/child-details" element={<ChildDetails />} />
 
            <Route path="/register-choice" element={<RegisterChoice />} />
 
@@ -49,7 +51,8 @@ const App = () => {
            <Route path="/parent-dashboard" element={<ParentDashboard />} />
 
             <Route path="/child/:id" element={<ChildDetails />} />
-     
+             <Route path="/adoption-form" element={<AdoptionForm />} />
+
 
             <Route path="/orphanage/dashboard" element={<OrphanageDashboard />} />
            <Route path="/orphanages" element={<Orphanages />} />

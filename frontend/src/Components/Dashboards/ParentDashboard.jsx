@@ -68,7 +68,7 @@ const ParentDashboard = () => {
 
   const handleLogout = () => {
     localStorage.removeItem("user");
-    window.location.href = '/login';
+    window.location.href = '/home';
   };
 
   if (!user || user.role !== "parent") {

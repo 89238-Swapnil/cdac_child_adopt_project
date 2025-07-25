@@ -9,24 +9,30 @@ const Orphanages = () => {
   useEffect(() => {
     const users = JSON.parse(localStorage.getItem("users")) || [];
 
-    // Filter users with role 'admin' (orphanage)
     const registeredOrphanages = users
       .filter(user => user.role === "admin")
-      .map((user, index) => ({
-        id: index + 1,
-        name: user.name,
-        image: user.image || "https://source.unsplash.com/400x300/?children,orphanage",
-        city: user.city || "Unknown City",
-        state: user.state || "Unknown State",
-        description: user.description || "Registered orphanage.",
-        childrenCount: user.children?.length || 0,
-        available: (user.children?.length || 0) > 0
-      }));
+      .map((user, index) => {
+        const imageSrc =
+          user.imageFile ||
+          user.image ||
+          "https://source.unsplash.com/400x300/?children,orphanage";
+
+        return {
+          id: index + 1,
+          name: user.name || user.orphanageName || "Orphanage",
+          image: imageSrc,
+          city: user.city || "Unknown City",
+          state: user.state || "Unknown State",
+          description: user.description || "Registered orphanage.",
+          childrenCount: user.children?.length || 0,
+          available: (user.children?.length || 0) > 0,
+        };
+      });
 
     setTimeout(() => {
       setOrphanages(registeredOrphanages);
       setLoading(false);
-    }, 500); // Simulate loading delay
+    }, 500); // Simulated delay
   }, []);
 
   if (loading) {

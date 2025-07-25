@@ -10,15 +10,14 @@ const statesList = [
   'Telangana', 'Tripura', 'Uttar Pradesh', 'Uttarakhand', 'West Bengal'
 ];
 
-const SignUp = () => {
+const SignUpParent = () => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
-    role: 'admin',
+    role: 'parent',
+    name: '',
     email: '',
     password: '',
     confirmPassword: '',
-    orphanageName: '',
-    adminName: '',
     phone: '',
     address: '',
     city: '',
@@ -46,42 +45,28 @@ const SignUp = () => {
 
     const userData = {
       ...formData,
-      name: formData.orphanageName,
       imageUrl: formData.imageFile?.name || '',
     };
-
-    delete userData.orphanageName;
 
     const users = JSON.parse(localStorage.getItem('users')) || [];
     users.push(userData);
     localStorage.setItem('users', JSON.stringify(users));
     localStorage.setItem('user', JSON.stringify(userData));
 
-    alert("Orphanage registered successfully!");
+    alert("Parent registered successfully!");
     navigate('/');
   };
 
   return (
     <div className="container mt-5">
-      <h2 className="text-center mb-4">Orphanage Registration</h2>
+      <h2 className="text-center mb-4">Parent Registration</h2>
       <Form onSubmit={handleSignUp}>
-        <Form.Group controlId="orphanageName" className="mb-3">
-          <Form.Label>Orphanage Name<span className="text-danger">*</span></Form.Label>
+        <Form.Group controlId="name" className="mb-3">
+          <Form.Label>Full Name<span className="text-danger">*</span></Form.Label>
           <Form.Control
             type="text"
-            name="orphanageName"
-            value={formData.orphanageName}
-            onChange={handleInputChange}
-            required
-          />
-        </Form.Group>
-
-        <Form.Group controlId="adminName" className="mb-3">
-          <Form.Label>Admin Name<span className="text-danger">*</span></Form.Label>
-          <Form.Control
-            type="text"
-            name="adminName"
-            value={formData.adminName}
+            name="name"
+            value={formData.name}
             onChange={handleInputChange}
             required
           />
@@ -201,7 +186,7 @@ const SignUp = () => {
           />
         </Form.Group>
 
-        <Button variant="primary" type="submit" className="w-100">
+        <Button variant="success" type="submit" className="w-100">
           Register
         </Button>
       </Form>
@@ -209,4 +194,4 @@ const SignUp = () => {
   );
 };
 
-export default SignUp;
+export default SignUpParent;

@@ -1,84 +1,58 @@
-import React, { useEffect, useState } from 'react';
-import ChildCard from '../Card/ChildCard';
-import { Container, Row, Col, Form } from 'react-bootstrap';
+import React from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { Container, Row, Col, Button } from 'react-bootstrap';
 
-const ChildrenList = () => {
-  const [children, setChildren] = useState([]);
-  const [filtered, setFiltered] = useState([]);
-  const [gender, setGender] = useState('');
-  const [age, setAge] = useState('');
+const ChildDetails = () => {
+  const { state } = useLocation();
+  const navigate = useNavigate();
+  const child = state?.child;
 
-  useEffect(() => {
-    const users = JSON.parse(localStorage.getItem("users")) || [];
+  const handleAdopt = () => {
+    alert(`Adoption request sent for ${child.name}`);
+    // Later: store in localStorage or send to backend
+  };
 
-    // Get all orphanage users with children
-    const orphanagesWithChildren = users
-      .filter(user => user.role === "admin" && Array.isArray(user.children))
-      .flatMap(orphanage => {
-        return orphanage.children.map(child => ({
-          ...child,
-          orphanageName: orphanage.name, // Add orphanage info if needed
-        }));
-      });
+  if (!child) {
+    return (
+      <Container className="text-center mt-5">
+        <h4>No child data provided.</h4>
+      </Container>
+    );
+  }
 
-    setChildren(orphanagesWithChildren);
-    setFiltered(orphanagesWithChildren);
-  }, []);
-
-  useEffect(() => {
-    let filteredData = [...children];
-
-    if (gender) {
-      filteredData = filteredData.filter(child => child.gender?.toLowerCase() === gender.toLowerCase());
-    }
-
-    if (age) {
-      filteredData = filteredData.filter(child => String(child.age) === age);
-    }
-
-    setFiltered(filteredData);
-  }, [gender, age, children]);
+  // Validate image: if not present or invalid, fallback
+  const imageUrl =
+    child.image && child.image.startsWith("http")
+      ? child.image
+      : "https://via.placeholder.com/300x200?text=Child";
 
   return (
-    <Container className="mt-4">
-      <h2 className="text-center mb-4">Available Children for Adoption</h2>
-
-      <Form className="mb-4 d-flex gap-3 justify-content-center">
-        <Form.Select
-          value={gender}
-          onChange={(e) => setGender(e.target.value)}
-          style={{ maxWidth: '200px' }}
-        >
-          <option value="">Filter by Gender</option>
-          <option value="Female">Female</option>
-          <option value="Male">Male</option>
-        </Form.Select>
-
-        <Form.Select
-          value={age}
-          onChange={(e) => setAge(e.target.value)}
-          style={{ maxWidth: '200px' }}
-        >
-          <option value="">Filter by Age</option>
-          {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(num => (
-            <option key={num} value={num}>{num}</option>
-          ))}
-        </Form.Select>
-      </Form>
-
-      <Row className="justify-content-center">
-        {filtered.length > 0 ? (
-          filtered.map((child, index) => (
-            <Col key={index} sm={12} md={6} lg={4} xl={3}>
-              <ChildCard child={child} />
-            </Col>
-          ))
-        ) : (
-          <p className="text-center">No children found with the selected filters.</p>
-        )}
+    <Container className="py-5">
+      <Row className="align-items-center">
+        <Col md={5}>
+          <img
+            src={imageUrl}
+            alt={child.name}
+            className="img-fluid rounded shadow"
+          />
+        </Col>
+        <Col md={7}>
+          <h2>{child.name}</h2>
+          <p><strong>Age:</strong> {child.age}</p>
+          <p><strong>Gender:</strong> {child.gender}</p>
+          <p><strong>Bio:</strong> {child.bio}</p>
+          <div className="d-flex gap-2 mt-3">
+            <Button variant="secondary" onClick={() => navigate(-1)}>
+              Back
+            </Button>
+            <Button variant="success" onClick={handleAdopt}>
+              Adopt
+            </Button>
+          </div>
+        </Col>
       </Row>
     </Container>
   );
 };
 
-export default ChildrenList;
+export default ChildDetails;

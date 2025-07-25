@@ -10,8 +10,8 @@ const OrphanageDetails = () => {
   const handleShowChildren = () => {
     navigate('/children-list', {
       state: {
-        orphanageId: orphanage.id, // must match orphanageId in child
-        orphanageName: orphanage.name
+        orphanageId: 101, // must match orphanageId in child
+        orphanageName: 'sherlok'
       }
     });
   };

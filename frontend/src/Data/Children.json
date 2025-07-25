@@ -1,62 +1,18 @@
 [
   {
-    "child_id": 1,
-    "name": "Anaya",
+    "id": 1,
+    "name": "Anjali",
     "age": 5,
-    "status": "Healthy",
-    "education": "Pre-KG",
     "gender": "Female",
-    "blood_group": "A+",
-    "colour_complexity": "Fair",
-    "deficiency": "None",
-    "medical_history": "N/A",
-    "other": "",
-    "image": "https://images.unsplash.com/photo-1554774853-bdeda0eeb7c4?auto=format&fit=crop&w=500&q=80",
-    "users_user_id": 101
+    "orphanageId": 101,
+    "image": "https://via.placeholder.com/200x150?text=Anjali"
   },
   {
-    "child_id": 2,
-    "name": "Aryan",
+    "id": 2,
+    "name": "Ravi",
     "age": 6,
-    "status": "Healthy",
-    "education": "UKG",
     "gender": "Male",
-    "blood_group": "B+",
-    "colour_complexity": "Wheatish",
-    "deficiency": "None",
-    "medical_history": "N/A",
-    "other": "",
-    "image": "https://images.unsplash.com/photo-1605731410623-66c662a8e1f5?auto=format&fit=crop&w=500&q=80",
-    "users_user_id": 102
-  },
-  {
-    "child_id": 3,
-    "name": "Meera",
-    "age": 4,
-    "status": "Healthy",
-    "education": "Nursery",
-    "gender": "Female",
-    "blood_group": "O+",
-    "colour_complexity": "Dark",
-    "deficiency": "Vitamin D",
-    "medical_history": "Minor flu history",
-    "other": "",
-    "image": "https://images.unsplash.com/photo-1555255707-59cd22117633?auto=format&fit=crop&w=500&q=80",
-    "users_user_id": 103
-  },
-  {
-    "child_id": 4,
-    "name": "Rohan",
-    "age": 7,
-    "status": "Healthy",
-    "education": "1st Grade",
-    "gender": "Male",
-    "blood_group": "AB+",
-    "colour_complexity": "Fair",
-    "deficiency": "None",
-    "medical_history": "N/A",
-    "other": "",
-    "image": "https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?auto=format&fit=crop&w=500&q=80",
-    "users_user_id": 104
+    "orphanageId": 102,
+    "image": "https://via.placeholder.com/200x150?text=Ravi"
   }
 ]

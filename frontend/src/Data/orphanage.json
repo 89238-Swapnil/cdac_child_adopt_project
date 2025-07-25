@@ -1,0 +1,22 @@
+[
+  {
+    "id": 101,
+    "name": "Hope Children Home",
+    "city": "Mumbai",
+    "state": "Maharashtra",
+    "description": "A safe home for children in need.",
+    "childrenCount": 12,
+    "image": "https://source.unsplash.com/400x300/?children",
+    "available": true
+  },
+  {
+    "id": 102,
+    "name": "Little Stars Orphanage",
+    "city": "Delhi",
+    "state": "Delhi",
+    "description": "Helping kids reach the stars.",
+    "childrenCount": 5,
+    "image": "https://source.unsplash.com/400x300/?kids",
+    "available": true
+  }
+]

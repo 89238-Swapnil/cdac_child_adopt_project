@@ -19,17 +19,18 @@ const SignIn = () => {
     );
 
     if (matchedUser) {
-      localStorage.setItem("user", JSON.stringify(matchedUser));
-      alert("Login Successful!");
+  localStorage.setItem("user", JSON.stringify(matchedUser));
+  alert("Login Successful!");
 
-      if (matchedUser.role === "parent") {
-        navigate("/parent/dashboard");
-      } else if (matchedUser.role === "admin") {
-        navigate("/orphanage/dashboard");
-      } else {
-        alert("Unknown role.");
-      }
-    } else {
+  if (matchedUser.role === "parent") {
+    navigate("/parent-dashboard"); // ✅ Redirect parent to home
+  } else if (matchedUser.role === "admin") {
+    navigate("/orphanage/dashboard");
+  } else {
+    alert("Unknown role.");
+  }
+}
+else {
       alert("Invalid credentials.");
     }
   };
@@ -63,12 +64,13 @@ const SignIn = () => {
 
           <button type="submit" className="btn btn-success w-100">Login</button>
         </form>
+        
 
         <div className="mt-3 d-flex justify-content-center align-items-center">
           <p className="mb-0 me-2">Not registered yet?</p>
           <button
             className="btn btn-primary btn-sm"
-            onClick={() => navigate("/signup")}
+            onClick={() => navigate("/register-choice")}
           >
             Register Here
           </button>

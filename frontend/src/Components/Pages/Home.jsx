@@ -2,17 +2,19 @@ import React, { useEffect, useState } from 'react';
 import './Home.css';
 import { useNavigate } from 'react-router-dom';
 import { FaMapMarkerAlt, FaSearch } from 'react-icons/fa';
+import SearchFilter from "./SearchFilter";
 
 const Home = () => {
   const [orphanages, setOrphanages] = useState([]);
   const navigate = useNavigate();
 
   useEffect(() => {
-    const storedOrphanages = JSON.parse(localStorage.getItem('orphanages')) || [];
+    const storedOrphanages = JSON.parse(localStorage.getItem('users')) || [];
     setOrphanages(storedOrphanages);
   }, []);
 
   return (
+    
     <>
       {/* Hero Section */}
       <section
@@ -79,9 +81,10 @@ const Home = () => {
 
           {/* Register Orphanage Button */}
           <div className="mt-4">
-            <button className="btn btn-warning fw-bold px-4 py-2" onClick={() => navigate('/signup/orphanage')}>
-              Register Your Orphanage
-            </button>
+            <button className="btn btn-warning fw-bold px-4 py-2" onClick={() => navigate('/signup')}>
+  Register Your Orphanage
+</button>
+
           </div>
         </div>
       </section>

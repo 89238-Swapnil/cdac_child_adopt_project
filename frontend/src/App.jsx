@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import 'bootstrap/dist/css/bootstrap.css';
 //import OrphanageDetails from '../../Components/Details/OrphanageDetails';
 import AdoptionForm from './Components/Form/AdoptionForm'; // Adjust path based on your folder structure
+//import AdoptionProcessSteps from './components/Pages/AdoptionProcessSteps';
 
 // Components
 import Navbar from "./Components/Navbar";
@@ -21,6 +22,7 @@ import Contact from "./Components/Pages/Contact";
 import SignIn from "./Components/Pages/Signin";
 import SignUp from "./Components/Pages/SignUp";
 import Orphanages from "./Components/Add/OrphanagesList";
+//import AddChildForm from './Components/Form/AddChildForm';
 
 // Dashboards
 import ParentDashboard from "./Components/Dashboards/ParentDashboard";
@@ -35,6 +37,8 @@ const App = () => {
         <main className="flex-grow-1">
           <Routes>
             <Route path="/" element={<Home />} />
+           
+
             <Route path="/home" element={<Home />} />
             <Route path="/about" element={<About />} />
             <Route path="/contact" element={<Contact />} />
@@ -46,10 +50,10 @@ const App = () => {
            <Route path="/register-choice" element={<RegisterChoice />} />
 
 <Route path="/signup" element={<SignUp />} />
- <Route path="/signup-parent" element={<SignUpParent />} />
+ <Route path="/signupparent" element={<SignUpParent />} />
             <Route path="/orphanages/:id" element={<OrphanageDetails />} />
            <Route path="/parent-dashboard" element={<ParentDashboard />} />
-
+           
             <Route path="/child/:id" element={<ChildDetails />} />
              <Route path="/adoption-form" element={<AdoptionForm />} />
 

@@ -23,7 +23,7 @@ const SignIn = () => {
   alert("Login Successful!");
 
   if (matchedUser.role === "parent") {
-    navigate("/parent-dashboard"); // ✅ Redirect parent to home
+    navigate("/"); // ✅ Redirect parent to home
   } else if (matchedUser.role === "admin") {
     navigate("/orphanage/dashboard");
   } else {

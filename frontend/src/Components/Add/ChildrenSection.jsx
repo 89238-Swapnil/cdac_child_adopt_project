@@ -135,13 +135,27 @@ const ChildrenSection = () => {
       >
         Add Child
       </button>
-
-      {showAddForm && (
-        <div className="card p-3 mb-4">
+{showAddForm && (
+  <div className="modal d-block" style={{ backgroundColor: 'rgba(0,0,0,0.5)' }}>
+    <div className="modal-dialog modal-lg modal-dialog-centered">
+      <div className="modal-content">
+        <div className="modal-header">
+          <h5 className="modal-title">{editingChild ? 'Edit Child' : 'Add Child'}</h5>
+          <button type="button" className="btn-close" onClick={() => setShowAddForm(false)}></button>
+        </div>
+        <div className="modal-body">
           <div className="row">
             <div className="col-md-4">
-              {childForm.image && <img src={childForm.image} alt="Preview" className="img-fluid rounded mb-3" />}
-              <input type="file" name="image" accept="image/*" className="form-control" onChange={handleInputChange} />
+              {childForm.image && (
+                <img src={childForm.image} alt="Preview" className="img-fluid rounded mb-3" />
+              )}
+              <input
+                type="file"
+                name="image"
+                accept="image/*"
+                className="form-control"
+                onChange={handleInputChange}
+              />
             </div>
             <div className="col-md-8">
               {[
@@ -168,25 +182,44 @@ const ChildrenSection = () => {
               ))}
 
               <div className="mb-2">
-                <select name="gender" className="form-control" value={childForm.gender} onChange={handleInputChange}>
+                <select
+                  name="gender"
+                  className="form-control"
+                  value={childForm.gender}
+                  onChange={handleInputChange}
+                >
                   <option value="Male">Male</option>
                   <option value="Female">Female</option>
                 </select>
               </div>
               <div className="mb-2">
-                <select name="status" className="form-control" value={childForm.status} onChange={handleInputChange}>
+                <select
+                  name="status"
+                  className="form-control"
+                  value={childForm.status}
+                  onChange={handleInputChange}
+                >
                   <option value="Available">Available</option>
                   <option value="Processing">Processing</option>
                   <option value="Adopted">Adopted</option>
                 </select>
               </div>
-              <button className="btn btn-primary" onClick={handleAddChild}>
-                {editingChild ? 'Update' : 'Add'} Child
-              </button>
             </div>
           </div>
         </div>
-      )}
+        <div className="modal-footer">
+          <button className="btn btn-secondary" onClick={() => setShowAddForm(false)}>
+            Cancel
+          </button>
+          <button className="btn btn-primary" onClick={handleAddChild}>
+            {editingChild ? 'Update' : 'Add'} Child
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+)}
+
 
       <div className="row">
         {children.length === 0 ? (

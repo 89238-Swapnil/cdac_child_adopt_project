@@ -1,58 +1,40 @@
 import React from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
-import { Container, Row, Col, Button } from 'react-bootstrap';
+import { useNavigate } from 'react-router-dom';
+import { Container, Row, Col, Card, Button } from 'react-bootstrap';
+import children from '../../Data/Children';
 
-const ChildDetails = () => {
-  const { state } = useLocation();
+const ChildrenList = () => {
   const navigate = useNavigate();
-  const child = state?.child;
 
-  const handleAdopt = () => {
-    alert(`Adoption request sent for ${child.name}`);
-    // Later: store in localStorage or send to backend
+  const handleViewDetails = (child) => {
+    navigate("/child-details", { state: { child } });
   };
-
-  if (!child) {
-    return (
-      <Container className="text-center mt-5">
-        <h4>No child data provided.</h4>
-      </Container>
-    );
-  }
-
-  // Validate image: if not present or invalid, fallback
-  const imageUrl =
-    child.image && child.image.startsWith("http")
-      ? child.image
-      : "https://via.placeholder.com/300x200?text=Child";
 
   return (
     <Container className="py-5">
-      <Row className="align-items-center">
-        <Col md={5}>
-          <img
-            src={imageUrl}
-            alt={child.name}
-            className="img-fluid rounded shadow"
-          />
-        </Col>
-        <Col md={7}>
-          <h2>{child.name}</h2>
-          <p><strong>Age:</strong> {child.age}</p>
-          <p><strong>Gender:</strong> {child.gender}</p>
-          <p><strong>Bio:</strong> {child.bio}</p>
-          <div className="d-flex gap-2 mt-3">
-            <Button variant="secondary" onClick={() => navigate(-1)}>
-              Back
-            </Button>
-            <Button variant="success" onClick={handleAdopt}>
-              Adopt
-            </Button>
-          </div>
-        </Col>
+      <h2 className="text-center mb-4">Available Children</h2>
+      <Row>
+        {children.map((child) => (
+          <Col md={4} key={child.id} className="mb-4">
+            <Card className="h-100 shadow-sm">
+              <Card.Img variant="top" src={child.image} />
+              <Card.Body>
+                <Card.Title>{child.name}</Card.Title>
+                <Card.Text>Age: {child.age}</Card.Text>
+                <Card.Text>Gender: {child.gender}</Card.Text>
+                <Button
+                  variant="primary"
+                  onClick={() => handleViewDetails(child)}
+                >
+                  View Profile
+                </Button>
+              </Card.Body>
+            </Card>
+          </Col>
+        ))}
       </Row>
     </Container>
   );
 };
 
-export default ChildDetails;
+export default ChildrenList;

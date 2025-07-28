@@ -2,7 +2,8 @@ import React, { useEffect, useState } from 'react';
 import './Home.css';
 import { useNavigate } from 'react-router-dom';
 import { FaMapMarkerAlt, FaSearch } from 'react-icons/fa';
-import SearchFilter from "./SearchFilter";
+import OrphanageCard from '../../Components/Card/OrphanageCard'; // your custom card
+import SearchFilter from './SearchFilter';
 
 const Home = () => {
   const [orphanages, setOrphanages] = useState([]);
@@ -14,7 +15,6 @@ const Home = () => {
   }, []);
 
   return (
-    
     <>
       {/* Hero Section */}
       <section
@@ -82,9 +82,8 @@ const Home = () => {
           {/* Register Orphanage Button */}
           <div className="mt-4">
             <button className="btn btn-warning fw-bold px-4 py-2" onClick={() => navigate('/signup')}>
-  Register Your Orphanage
-</button>
-
+              Register Your Orphanage
+            </button>
           </div>
         </div>
       </section>
@@ -97,23 +96,7 @@ const Home = () => {
             {orphanages.length > 0 ? (
               orphanages.map((orphanage, index) => (
                 <div className="col-md-4" key={index}>
-                  <div className="card h-100 shadow-sm">
-                    <img
-                      src={orphanage.image || 'https://via.placeholder.com/400x200?text=No+Image'}
-                      className="card-img-top"
-                      alt={orphanage.name}
-                      style={{ height: '200px', objectFit: 'cover' }}
-                    />
-                    <div className="card-body">
-                      <h5 className="card-title text-primary">{orphanage.name}</h5>
-                      <p className="card-text text-muted">
-                        <FaMapMarkerAlt className="me-1" />
-                        {orphanage.city}, {orphanage.state}
-                      </p>
-                      <p className="card-text">{orphanage.description || 'No description available.'}</p>
-                      <button className="btn btn-outline-primary w-100 mt-3">View Orphanage</button>
-                    </div>
-                  </div>
+                  <OrphanageCard orphanage={orphanage} />
                 </div>
               ))
             ) : (

@@ -5,7 +5,7 @@ import 'bootstrap/dist/css/bootstrap.css';
 import AdoptionForm from './Components/Form/AdoptionForm'; // Adjust path based on your folder structure
 //import AdoptionProcessSteps from './components/Pages/AdoptionProcessSteps';
 
-import AddChildForm from './Components/Add/AddChildForm';
+import AddChildForm from './Components/Form/AddChildForm';
 
 
 // Components

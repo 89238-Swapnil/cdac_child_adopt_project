@@ -5,6 +5,9 @@ import 'bootstrap/dist/css/bootstrap.css';
 import AdoptionForm from './Components/Form/AdoptionForm'; // Adjust path based on your folder structure
 //import AdoptionProcessSteps from './components/Pages/AdoptionProcessSteps';
 
+import AddChildForm from './Components/Add/AddChildForm';
+
+
 // Components
 import Navbar from "./Components/Navbar";
 import Footer from "./Components/Footer";
@@ -38,19 +41,19 @@ const App = () => {
           <Routes>
             <Route path="/" element={<Home />} />
            
-
+            <Route path="/add-child" element={<AddChildForm />} />
             <Route path="/home" element={<Home />} />
             <Route path="/about" element={<About />} />
             <Route path="/contact" element={<Contact />} />
             <Route path="/signin" element={<SignIn />} />
             
-        <Route path="/children-list" element={<ChildrenList />} />
+        <Route path="/children" element={<ChildrenList />} />
         <Route path="/child-details" element={<ChildDetails />} />
 
            <Route path="/register-choice" element={<RegisterChoice />} />
 
 <Route path="/signup" element={<SignUp />} />
- <Route path="/signupparent" element={<SignUpParent />} />
+ <Route path="/signup-parent" element={<SignUpParent />} />
             <Route path="/orphanages/:id" element={<OrphanageDetails />} />
            <Route path="/parent-dashboard" element={<ParentDashboard />} />
            

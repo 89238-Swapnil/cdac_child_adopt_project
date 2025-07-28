@@ -58,9 +58,10 @@ const SignUpParent = () => {
   };
 
   return (
-    <div className="container mt-5">
-      <h2 className="text-center mb-4">Parent Registration</h2>
-      <Form onSubmit={handleSignUp}>
+    <div className="container mt-5 d-flex justify-content-center">
+  <div className="p-4 border rounded shadow" style={{ maxWidth: '600px', width: '100%' }}>
+    <h2 className="text-center mb-4">Parent Registration</h2>
+    <Form onSubmit={handleSignUp}>
         <Form.Group controlId="name" className="mb-3">
           <Form.Label>Full Name<span className="text-danger">*</span></Form.Label>
           <Form.Control
@@ -190,6 +191,7 @@ const SignUpParent = () => {
           Register
         </Button>
       </Form>
+    </div>
     </div>
   );
 };

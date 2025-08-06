@@ -5,12 +5,12 @@ import com.adoption.entity.User;
 public class AuthResponse {
     
     private String token;
-    private String type = "Bearer";
+    private String type = Bearer;
     private Long id;
     private String email;
     private User.Role role;
     
-    // Constructors
+     Constructors
     public AuthResponse() {}
     
     public AuthResponse(String token, Long id, String email, User.Role role) {
@@ -20,7 +20,7 @@ public class AuthResponse {
         this.role = role;
     }
     
-    // Getters and Setters
+     Getters and Setters
     public String getToken() {
         return token;
     }

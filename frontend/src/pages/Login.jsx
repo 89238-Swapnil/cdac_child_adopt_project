@@ -6,7 +6,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Heart, Mail, Lock, AlertCircle } from 'lucide-react';
+import { Heart, Mail, Lock, AlertCircle, Eye, EyeOff } from 'lucide-react';
 
 const Login = () => {
   const { login, isAuthenticated, isParent, isOrphanage } = useAuth();
@@ -17,6 +17,7 @@ const Login = () => {
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [showPassword, setShowPassword] = useState(false); // 👈 Added state
 
   React.useEffect(() => {
     if (isAuthenticated()) {
@@ -43,7 +44,6 @@ const Login = () => {
 
     try {
       await login(formData);
-      // Navigation will be handled by useEffect
     } catch (err) {
       setError(err.message || 'Login failed. Please check your credentials.');
     } finally {
@@ -52,13 +52,12 @@ const Login = () => {
   };
 
   if (isAuthenticated()) {
-    return null; // Will redirect in useEffect
+    return null;
   }
 
   return (
     <div className="min-h-[calc(100vh-200px)] flex items-center justify-center">
       <div className="w-full max-w-md space-y-6">
-        {/* Header */}
         <div className="text-center space-y-2">
           <div className="flex justify-center">
             <Heart className="h-12 w-12 text-primary" />
@@ -67,7 +66,6 @@ const Login = () => {
           <p className="text-gray-600">Sign in to your account</p>
         </div>
 
-        {/* Login Form */}
         <Card>
           <CardHeader>
             <CardTitle>Login</CardTitle>
@@ -108,13 +106,20 @@ const Login = () => {
                   <Input
                     id="password"
                     name="password"
-                    type="password"
+                    type={showPassword ? 'text' : 'password'}
                     placeholder="Enter your password"
                     value={formData.password}
                     onChange={handleChange}
-                    className="pl-10"
+                    className="pl-10 pr-10"
                     required
                   />
+                  <button
+                    type="button"
+                    className="absolute right-3 top-2.5 text-gray-500 hover:text-gray-700"
+                    onClick={() => setShowPassword((prev) => !prev)}
+                  >
+                    {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                  </button>
                 </div>
               </div>
 
@@ -125,7 +130,6 @@ const Login = () => {
           </CardContent>
         </Card>
 
-        {/* Register Links */}
         <div className="text-center space-y-4">
           <p className="text-sm text-gray-600">
             Don't have an account?
@@ -149,4 +153,3 @@ const Login = () => {
 };
 
 export default Login;
-

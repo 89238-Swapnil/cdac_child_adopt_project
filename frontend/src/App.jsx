@@ -16,6 +16,8 @@ import ManageChildren from './pages/ManageChildren';
 import AdoptionRequests from './pages/AdoptionRequests';
 import Profile from './pages/Profile';
 import ProtectedRoute from './components/ProtectedRoute';
+import UpdateProfile from './pages/UpdateProfile';
+import ErrorPage from './pages/ErrorPage';
 import './App.css';
 
 function App() {
@@ -26,13 +28,10 @@ function App() {
           <Navbar />
           <main className="container mx-auto px-4 py-8">
             <Routes>
-              {/* Public Routes */}
               <Route path="/" element={<Home />} />
               <Route path="/login" element={<Login />} />
               <Route path="/register/parent" element={<RegisterParent />} />
               <Route path="/register/orphanage" element={<RegisterOrphanage />} />
-              
-              {/* Protected Routes for Parents */}
               <Route 
                 path="/parent/dashboard" 
                 element={
@@ -81,8 +80,6 @@ function App() {
                   </ProtectedRoute>
                 } 
               />
-              
-              {/* Protected Routes for Orphanages */}
               <Route 
                 path="/orphanage/dashboard" 
                 element={
@@ -107,8 +104,6 @@ function App() {
                   </ProtectedRoute>
                 } 
               />
-              
-              {/* Common Protected Routes */}
               <Route 
                 path="/profile" 
                 element={
@@ -117,9 +112,16 @@ function App() {
                   </ProtectedRoute>
                 } 
               />
-              
-              {/* Catch all route */}
-              <Route path="*" element={<Navigate to="/" replace />} />
+              <Route 
+                path="/update-profile" 
+                element={
+                  <ProtectedRoute>
+                    <UpdateProfile />
+                  </ProtectedRoute>
+                } 
+              />
+              <Route path="/error" element={<ErrorPage />} />
+              <Route path="*" element={<Navigate to="/error" replace />} />
             </Routes>
           </main>
         </div>
@@ -129,4 +131,3 @@ function App() {
 }
 
 export default App;
-

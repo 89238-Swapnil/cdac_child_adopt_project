@@ -2,17 +2,16 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { Button } from '@/components/ui/button';
-import { 
-  Heart, 
-  Menu, 
-  X, 
-  User, 
-  LogOut, 
-  Home, 
-  Building2, 
-  Users, 
+import {
+  Heart,
+  Menu,
+  X,
+  User,
+  LogOut,
+  Home,
+  Building2,
+  Users,
   FileText,
-  Settings
 } from 'lucide-react';
 
 const Navbar = () => {
@@ -57,34 +56,28 @@ const Navbar = () => {
     <nav className="bg-white shadow-lg border-b">
       <div className="container mx-auto px-4">
         <div className="flex justify-between items-center h-16">
-          {/* Logo */}
           <Link to="/" className="flex items-center space-x-2" onClick={closeMenu}>
             <Heart className="h-8 w-8 text-primary" />
             <span className="text-xl font-bold text-primary">Child Adoption System</span>
           </Link>
 
-          {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-6">
-            {isAuthenticated() && (
-              <>
-                {getNavItems().map((item) => {
-                  const Icon = item.icon;
-                  return (
-                    <Link
-                      key={item.to}
-                      to={item.to}
-                      className="flex items-center space-x-1 text-gray-700 hover:text-primary transition-colors"
-                    >
-                      <Icon className="h-4 w-4" />
-                      <span>{item.label}</span>
-                    </Link>
-                  );
-                })}
-              </>
-            )}
+            {isAuthenticated() &&
+              getNavItems().map((item) => {
+                const Icon = item.icon;
+                return (
+                  <Link
+                    key={item.to}
+                    to={item.to}
+                    className="flex items-center space-x-1 text-gray-700 hover:text-primary transition-colors"
+                  >
+                    <Icon className="h-4 w-4" />
+                    <span>{item.label}</span>
+                  </Link>
+                );
+              })}
           </div>
 
-          {/* Desktop Auth Buttons */}
           <div className="hidden md:flex items-center space-x-4">
             {isAuthenticated() ? (
               <div className="flex items-center space-x-4">
@@ -94,9 +87,9 @@ const Navbar = () => {
                     <span>Profile</span>
                   </Button>
                 </Link>
-                <Button 
-                  variant="ghost" 
-                  size="sm" 
+                <Button
+                  variant="ghost"
+                  size="sm"
                   onClick={handleLogout}
                   className="flex items-center space-x-1 text-red-600 hover:text-red-700"
                 >
@@ -109,19 +102,16 @@ const Navbar = () => {
                 <Link to="/login">
                   <Button variant="ghost" size="sm">Login</Button>
                 </Link>
-                <div className="flex items-center space-x-1">
-                  <Link to="/register/parent">
-                    <Button variant="outline" size="sm">Register as Parent</Button>
-                  </Link>
-                  <Link to="/register/orphanage">
-                    <Button size="sm">Register as Orphanage</Button>
-                  </Link>
-                </div>
+                <Link to="/register/parent">
+                  <Button variant="outline" size="sm">Register as Parent</Button>
+                </Link>
+                <Link to="/register/orphanage">
+                  <Button size="sm">Register as Orphanage</Button>
+                </Link>
               </div>
             )}
           </div>
 
-          {/* Mobile Menu Button */}
           <div className="md:hidden">
             <Button variant="ghost" size="sm" onClick={toggleMenu}>
               {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
@@ -129,7 +119,6 @@ const Navbar = () => {
           </div>
         </div>
 
-        {/* Mobile Navigation */}
         {isMenuOpen && (
           <div className="md:hidden py-4 border-t">
             <div className="flex flex-col space-y-2">
@@ -199,4 +188,3 @@ const Navbar = () => {
 };
 
 export default Navbar;
-

@@ -3,13 +3,14 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Heart, Users, Building2, FileText, Shield, Clock } from 'lucide-react';
+import { Heart, Users, Building2, FileText, Shield, Clock, Quote } from 'lucide-react';
 
 const Home = () => {
   const { isAuthenticated, isParent, isOrphanage } = useAuth();
   const navigate = useNavigate();
 
   React.useEffect(() => {
+    window.scrollTo(0, 0);
     if (isAuthenticated()) {
       if (isParent()) {
         navigate('/parent/dashboard');
@@ -42,24 +43,36 @@ const Home = () => {
     },
   ];
 
+  const testimonials = [
+    {
+      name: 'Neha Sharma',
+      feedback: 'The process was smooth and clear. We were matched with a beautiful child within weeks!',
+    },
+    {
+      name: 'Ajay & Priya',
+      feedback: 'A truly wonderful experience. The platform guided us every step of the way.',
+    },
+    {
+      name: 'Anita Rao',
+      feedback: 'As an orphanage admin, it’s a blessing to find a tool that supports secure and loving adoptions.',
+    },
+  ];
+
   if (isAuthenticated()) {
-    return null; // Will redirect in useEffect
+    return null;
   }
 
   return (
     <div className="space-y-16">
-      {/* Hero Section */}
-      <section className="text-center space-y-8">
+      <section className="text-center space-y-8 transition-opacity duration-700 ease-in opacity-100">
         <div className="space-y-4">
-          <h1 className="text-4xl md:text-6xl font-bold text-gray-900">
-            Bringing Families Together
-          </h1>
+          <h1 className="text-4xl md:text-6xl font-bold text-gray-900">Bringing Families Together</h1>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">
             Our Child Adoption System connects orphanages with loving families, 
             making the adoption process transparent, secure, and efficient.
           </p>
         </div>
-        
+
         <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
           <Link to="/register/parent">
             <Button size="lg" className="w-full sm:w-auto">
@@ -74,7 +87,7 @@ const Home = () => {
             </Button>
           </Link>
         </div>
-        
+
         <div className="text-sm text-gray-500">
           Already have an account?{' '}
           <Link to="/login" className="text-primary hover:underline">
@@ -83,8 +96,7 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Features Section */}
-      <section className="space-y-8">
+      <section className="space-y-8 transition-all duration-700 ease-in">
         <div className="text-center space-y-4">
           <h2 className="text-3xl font-bold text-gray-900">Why Choose Our Platform?</h2>
           <p className="text-gray-600 max-w-2xl mx-auto">
@@ -92,7 +104,7 @@ const Home = () => {
             transparency, and efficiency for all parties involved.
           </p>
         </div>
-        
+
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {features.map((feature, index) => {
             const Icon = feature.icon;
@@ -113,15 +125,14 @@ const Home = () => {
         </div>
       </section>
 
-      {/* How It Works Section */}
-      <section className="space-y-8">
+      <section className="space-y-8 transition-opacity duration-700 ease-in">
         <div className="text-center space-y-4">
           <h2 className="text-3xl font-bold text-gray-900">How It Works</h2>
           <p className="text-gray-600 max-w-2xl mx-auto">
             Our simple three-step process makes adoption accessible and straightforward.
           </p>
         </div>
-        
+
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           <div className="text-center space-y-4">
             <div className="mx-auto w-16 h-16 bg-primary rounded-full flex items-center justify-center text-white text-2xl font-bold">
@@ -132,7 +143,7 @@ const Home = () => {
               Create your account as either a parent or orphanage and complete the verification process.
             </p>
           </div>
-          
+
           <div className="text-center space-y-4">
             <div className="mx-auto w-16 h-16 bg-primary rounded-full flex items-center justify-center text-white text-2xl font-bold">
               2
@@ -142,7 +153,7 @@ const Home = () => {
               Parents can browse available children and orphanages can manage their listings.
             </p>
           </div>
-          
+
           <div className="text-center space-y-4">
             <div className="mx-auto w-16 h-16 bg-primary rounded-full flex items-center justify-center text-white text-2xl font-bold">
               3
@@ -155,8 +166,30 @@ const Home = () => {
         </div>
       </section>
 
-      {/* CTA Section */}
-      <section className="bg-primary/5 rounded-lg p-8 text-center space-y-6">
+      <section className="space-y-8 transition-all duration-700 ease-in">
+        <div className="text-center space-y-4">
+          <h2 className="text-3xl font-bold text-gray-900">What People Are Saying</h2>
+          <p className="text-gray-600 max-w-2xl mx-auto">
+            Hear from parents and orphanages who’ve used our platform.
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {testimonials.map((testimonial, index) => (
+            <Card key={index} className="text-center p-4">
+              <CardHeader>
+                <Quote className="mx-auto w-8 h-8 text-primary" />
+              </CardHeader>
+              <CardContent>
+                <p className="text-gray-700 italic mb-4">"{testimonial.feedback}"</p>
+                <p className="text-sm font-semibold text-gray-900">{testimonial.name}</p>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      </section>
+
+      <section className="bg-primary/5 rounded-lg p-8 text-center space-y-6 transition-opacity duration-700 ease-in">
         <h2 className="text-3xl font-bold text-gray-900">Ready to Get Started?</h2>
         <p className="text-gray-600 max-w-2xl mx-auto">
           Join our platform today and take the first step towards creating loving families 
@@ -180,4 +213,3 @@ const Home = () => {
 };
 
 export default Home;
-

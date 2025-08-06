@@ -1,75 +1,132 @@
-import React from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import 'bootstrap/dist/css/bootstrap.css';
-//import OrphanageDetails from '../../Components/Details/OrphanageDetails';
-import AdoptionForm from './Components/Form/AdoptionForm'; // Adjust path based on your folder structure
-//import AdoptionProcessSteps from './components/Pages/AdoptionProcessSteps';
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { AuthProvider } from './contexts/AuthContext';
+import Navbar from './components/Navbar';
+import Home from './pages/Home';
+import Login from './pages/Login';
+import RegisterParent from './pages/RegisterParent';
+import RegisterOrphanage from './pages/RegisterOrphanage';
+import ParentDashboard from './pages/ParentDashboard';
+import OrphanageDashboard from './pages/OrphanageDashboard';
+import OrphanageList from './pages/OrphanageList';
+import OrphanageChildren from './pages/OrphanageChildren';
+import ChildrenList from './pages/ChildrenList';
+import ChildDetails from './pages/ChildDetails';
+import ManageChildren from './pages/ManageChildren';
+import AdoptionRequests from './pages/AdoptionRequests';
+import Profile from './pages/Profile';
+import ProtectedRoute from './components/ProtectedRoute';
+import './App.css';
 
-import AddChildForm from './Components/Form/AddChildForm';
-
-
-// Components
-import Navbar from "./Components/Navbar";
-import Footer from "./Components/Footer";
-import ChildrenList from './Components/Add/ChildrenList';
-import ChildDetails from './Components/Details/ChildDetails';
-import OrphanageDetails from './Components/Details/OrphanageDetails';
-
-// Pages
-import SignUpParent from './Components/Pages/SignupParent';
-import RegisterChoice from './Components/RegisterChoice';
-
-import Home from "./Components/Pages/Home";
-import About from "./Components/Pages/About";
-import Contact from "./Components/Pages/Contact";
-import SignIn from "./Components/Pages/Signin";
-import SignUp from "./Components/Pages/SignUp";
-import Orphanages from "./Components/Add/OrphanagesList";
-//import AddChildForm from './Components/Form/AddChildForm';
-
-// Dashboards
-import ParentDashboard from "./Components/Dashboards/ParentDashboard";
-import OrphanageDashboard from "./Components/Dashboards/OrphanageDashboard";
-
-const App = () => {
+function App() {
   return (
-    <Router>
-      <div className="d-flex flex-column min-vh-100">
-        <Navbar />
-
-        <main className="flex-grow-1">
-          <Routes>
-            <Route path="/" element={<Home />} />
-           
-            <Route path="/add-child" element={<AddChildForm />} />
-            <Route path="/home" element={<Home />} />
-            <Route path="/about" element={<About />} />
-            <Route path="/contact" element={<Contact />} />
-            <Route path="/signin" element={<SignIn />} />
-            
-        <Route path="/children" element={<ChildrenList />} />
-        <Route path="/child-details" element={<ChildDetails />} />
-
-           <Route path="/register-choice" element={<RegisterChoice />} />
-
-<Route path="/signup" element={<SignUp />} />
- <Route path="/signup-parent" element={<SignUpParent />} />
-            <Route path="/orphanages/:id" element={<OrphanageDetails />} />
-           <Route path="/parent-dashboard" element={<ParentDashboard />} />
-           
-            <Route path="/child/:id" element={<ChildDetails />} />
-             <Route path="/adoption-form" element={<AdoptionForm />} />
-
-
-            <Route path="/orphanage/dashboard" element={<OrphanageDashboard />} />
-           <Route path="/orphanages" element={<Orphanages />} />
-          </Routes>
-        </main>
-
-        <Footer />
-      </div>
-    </Router>
+    <AuthProvider>
+      <Router>
+        <div className="min-h-screen bg-background">
+          <Navbar />
+          <main className="container mx-auto px-4 py-8">
+            <Routes>
+              {/* Public Routes */}
+              <Route path="/" element={<Home />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/register/parent" element={<RegisterParent />} />
+              <Route path="/register/orphanage" element={<RegisterOrphanage />} />
+              
+              {/* Protected Routes for Parents */}
+              <Route 
+                path="/parent/dashboard" 
+                element={
+                  <ProtectedRoute role="PARENT">
+                    <ParentDashboard />
+                  </ProtectedRoute>
+                } 
+              />
+              <Route 
+                path="/orphanages" 
+                element={
+                  <ProtectedRoute role="PARENT">
+                    <OrphanageList />
+                  </ProtectedRoute>
+                } 
+              />
+              <Route 
+                path="/orphanage/:orphanageId/children" 
+                element={
+                  <ProtectedRoute role="PARENT">
+                    <OrphanageChildren />
+                  </ProtectedRoute>
+                } 
+              />
+              <Route 
+                path="/children" 
+                element={
+                  <ProtectedRoute role="PARENT">
+                    <ChildrenList />
+                  </ProtectedRoute>
+                } 
+              />
+              <Route 
+                path="/children/:id" 
+                element={
+                  <ProtectedRoute role="PARENT">
+                    <ChildDetails />
+                  </ProtectedRoute>
+                } 
+              />
+              <Route 
+                path="/my-requests" 
+                element={
+                  <ProtectedRoute role="PARENT">
+                    <AdoptionRequests />
+                  </ProtectedRoute>
+                } 
+              />
+              
+              {/* Protected Routes for Orphanages */}
+              <Route 
+                path="/orphanage/dashboard" 
+                element={
+                  <ProtectedRoute role="ORPHANAGE">
+                    <OrphanageDashboard />
+                  </ProtectedRoute>
+                } 
+              />
+              <Route 
+                path="/manage-children" 
+                element={
+                  <ProtectedRoute role="ORPHANAGE">
+                    <ManageChildren />
+                  </ProtectedRoute>
+                } 
+              />
+              <Route 
+                path="/adoption-requests" 
+                element={
+                  <ProtectedRoute role="ORPHANAGE">
+                    <AdoptionRequests />
+                  </ProtectedRoute>
+                } 
+              />
+              
+              {/* Common Protected Routes */}
+              <Route 
+                path="/profile" 
+                element={
+                  <ProtectedRoute>
+                    <Profile />
+                  </ProtectedRoute>
+                } 
+              />
+              
+              {/* Catch all route */}
+              <Route path="*" element={<Navigate to="/" replace />} />
+            </Routes>
+          </main>
+        </div>
+      </Router>
+    </AuthProvider>
   );
-};
+}
 
 export default App;
+

@@ -1,36 +1,35 @@
 const API_BASE_URL = 'http://localhost:8080/api';
 
-// Get auth token from localStorage
-const getAuthToken = () => {
-  return localStorage.getItem('token');
-};
+// Token & User Management
+const getAuthToken = () => localStorage.getItem('token');
 
-// Set auth token in localStorage
-const setAuthToken = (token) => {
-  localStorage.setItem('token', token);
-};
+const setAuthToken = (token) => localStorage.setItem('token', token);
 
-// Remove auth token from localStorage
 const removeAuthToken = () => {
   localStorage.removeItem('token');
   localStorage.removeItem('user');
 };
 
-// Get user data from localStorage
+const clearStorage = () => {
+  localStorage.clear();
+};
+
 const getUser = () => {
   const user = localStorage.getItem('user');
   return user ? JSON.parse(user) : null;
 };
 
-// Set user data in localStorage
 const setUser = (user) => {
   localStorage.setItem('user', JSON.stringify(user));
 };
 
-// Create API request without auth header (simplified)
+const saveAuthToken = setAuthToken;
+const saveUser = setUser;
+
+// Basic Request Wrapper
 const apiRequest = async (endpoint, options = {}) => {
   const url = `${API_BASE_URL}${endpoint}`;
-  
+
   const config = {
     headers: {
       'Content-Type': 'application/json',
@@ -41,12 +40,12 @@ const apiRequest = async (endpoint, options = {}) => {
 
   try {
     const response = await fetch(url, config);
-    
+
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({}));
       throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
     }
-    
+
     return await response.json();
   } catch (error) {
     console.error('API request failed:', error);
@@ -54,23 +53,19 @@ const apiRequest = async (endpoint, options = {}) => {
   }
 };
 
-// Authentication API calls
+// Authentication API
 export const authAPI = {
   login: async (credentials) => {
     const response = await apiRequest('/auth/login', {
       method: 'POST',
       body: JSON.stringify(credentials),
     });
-    
+
     if (response.token) {
       setAuthToken(response.token);
-      setUser({
-        id: response.id,
-        email: response.email,
-        role: response.role,
-      });
+      setUser({ id: response.id, email: response.email, role: response.role });
     }
-    
+
     return response;
   },
 
@@ -79,16 +74,12 @@ export const authAPI = {
       method: 'POST',
       body: JSON.stringify(parentData),
     });
-    
+
     if (response.token) {
       setAuthToken(response.token);
-      setUser({
-        id: response.id,
-        email: response.email,
-        role: response.role,
-      });
+      setUser({ id: response.id, email: response.email, role: response.role });
     }
-    
+
     return response;
   },
 
@@ -97,25 +88,30 @@ export const authAPI = {
       method: 'POST',
       body: JSON.stringify(orphanageData),
     });
-    
+
     if (response.token) {
       setAuthToken(response.token);
-      setUser({
-        id: response.id,
-        email: response.email,
-        role: response.role,
-      });
+      setUser({ id: response.id, email: response.email, role: response.role });
     }
-    
+
     return response;
   },
 
   logout: () => {
     removeAuthToken();
   },
+
+  fetchCurrentUser: async () => {
+    return await apiRequest('/auth/me', {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${getAuthToken()}`,
+      },
+    });
+  },
 };
 
-// Parent API calls
+// Parent APIs
 export const parentAPI = {
   getProfile: (userId) => apiRequest(`/parent/profile/${userId}`),
   updateProfile: (userId, profileData) => apiRequest(`/parent/profile/${userId}`, {
@@ -128,7 +124,7 @@ export const parentAPI = {
   }),
 };
 
-// Orphanage API calls
+// Orphanage APIs
 export const orphanageAPI = {
   getAll: () => apiRequest('/orphanage/all'),
   getProfile: (userId) => apiRequest(`/orphanage/profile/${userId}`),
@@ -143,7 +139,7 @@ export const orphanageAPI = {
   getById: (id) => apiRequest(`/orphanage/${id}`),
 };
 
-// Children API calls
+// Children APIs
 export const childrenAPI = {
   getAllAvailable: () => apiRequest('/children/available'),
   getByOrphanage: (orphanageId) => apiRequest(`/children/orphanage/${orphanageId}`),
@@ -167,7 +163,7 @@ export const childrenAPI = {
   }),
 };
 
-// Adoption Request API calls
+// Adoption APIs
 export const adoptionAPI = {
   getMyRequests: (userId) => apiRequest(`/adoption-requests/my-requests/${userId}`),
   getOrphanageRequests: (userId) => apiRequest(`/adoption-requests/orphanage-requests/${userId}`),
@@ -196,6 +192,14 @@ export const adoptionAPI = {
   }),
 };
 
-// Utility functions
-export { getAuthToken, setAuthToken, removeAuthToken, getUser, setUser };
-
+// Utility Exports
+export {
+  getAuthToken,
+  setAuthToken,
+  removeAuthToken,
+  getUser,
+  setUser,
+  saveAuthToken,
+  saveUser,
+  clearStorage,
+};

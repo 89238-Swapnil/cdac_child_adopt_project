@@ -1,74 +1,187 @@
 package com.adoption.controller;
 
 import com.adoption.dto.MessageResponse;
-import com.adoption.dto.PasswordChangeRequest;
-import com.adoption.entity.Parent;
-import com.adoption.service.ParentService;
+import com.adoption.entity.AdoptionForm;
+import com.adoption.entity.AdoptionRequest;
+import com.adoption.service.AdoptionRequestService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/parent")
+@RequestMapping("/adoption-requests")
 @CrossOrigin(origins = "*", maxAge = 3600)
-public class ParentController {
+public class AdoptionRequestController {
     
     @Autowired
-    private ParentService parentService;
+    private AdoptionRequestService adoptionRequestService;
     
-    @GetMapping("/profile/{userId}")
-    public ResponseEntity<?> getProfile(@PathVariable Long userId) {
+    @GetMapping("/my-requests/{userId}")
+    public ResponseEntity<?> getMyRequests(@PathVariable Long userId) {
         try {
-            Parent parent = parentService.getParentProfile(userId);
-            return ResponseEntity.ok(parent);
+            List<AdoptionRequest> requests = adoptionRequestService.getRequestsByParent(userId);
+            return ResponseEntity.ok(requests);
         } catch (Exception e) {
             return ResponseEntity.badRequest()
                     .body(new MessageResponse("Error: " + e.getMessage()));
         }
     }
     
-    @PutMapping("/profile/{userId}")
-    public ResponseEntity<?> updateProfile(@PathVariable Long userId,
-                                         @RequestBody Map<String, Object> requestData) {
+    @GetMapping("/orphanage-requests/{userId}")
+    public ResponseEntity<?> getOrphanageRequests(@PathVariable Long userId) {
         try {
-            // Extract parent data
+            List<AdoptionRequest> requests = adoptionRequestService.getRequestsByOrphanage(userId);
+            return ResponseEntity.ok(requests);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest()
+                    .body(new MessageResponse("Error: " + e.getMessage()));
+        }
+    }
+    
+    @GetMapping("/orphanage-requests/{userId}/status/{status}")
+    public ResponseEntity<?> getOrphanageRequestsByStatus(@PathVariable Long userId,
+                                                        @PathVariable AdoptionRequest.Status status) {
+        try {
+            List<AdoptionRequest> requests = adoptionRequestService.getRequestsByOrphanageAndStatus(
+                    userId, status);
+            return ResponseEntity.ok(requests);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest()
+                    .body(new MessageResponse("Error: " + e.getMessage()));
+        }
+    }
+    
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getRequestById(@PathVariable Long id) {
+        try {
+            AdoptionRequest request = adoptionRequestService.getRequestById(id);
+            return ResponseEntity.ok(request);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest()
+                    .body(new MessageResponse("Error: " + e.getMessage()));
+        }
+    }
+    
+    @PostMapping("/create")
+    public ResponseEntity<?> createAdoptionRequest(@RequestBody Map<String, Object> requestData) {
+        try {
+            Long parentUserId = Long.valueOf(requestData.get("parentUserId").toString());
+            Long childId = Long.valueOf(requestData.get("childId").toString());
+            String parentNotes = (String) requestData.get("parentNotes");
+            
+            AdoptionRequest request = adoptionRequestService.createAdoptionRequest(
+                    parentUserId, childId, parentNotes);
+            return ResponseEntity.ok(request);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest()
+                    .body(new MessageResponse("Error: " + e.getMessage()));
+        }
+    }
+    
+    @PostMapping("/create-with-form")
+    public ResponseEntity<?> createAdoptionRequestWithForm(@RequestBody Map<String, Object> requestData) {
+        try {
+            Long parentUserId = Long.valueOf(requestData.get("parentUserId").toString());
+            Long childId = Long.valueOf(requestData.get("childId").toString());
+            String parentNotes = (String) requestData.get("parentNotes");
+            
+            // Extract adoption form data
             @SuppressWarnings("unchecked")
-            Map<String, Object> parentData = (Map<String, Object>) requestData.get("parent");
+            Map<String, Object> formData = (Map<String, Object>) requestData.get("adoptionForm");
             
-            Parent updatedParent = new Parent();
-            updatedParent.setFirstName((String) parentData.get("firstName"));
-            updatedParent.setLastName((String) parentData.get("lastName"));
-            updatedParent.setPhone((String) parentData.get("phone"));
-            updatedParent.setAddress((String) parentData.get("address"));
-            updatedParent.setOccupation((String) parentData.get("occupation"));
-            
-            if (parentData.get("annualIncome") != null) {
-                updatedParent.setAnnualIncome(java.math.BigDecimal.valueOf(Double.valueOf(parentData.get("annualIncome").toString())));
+            AdoptionForm adoptionForm = new AdoptionForm();
+            if (formData.get("reasonForAdoption") != null) {
+                adoptionForm.setReasonForAdoption((String) formData.get("reasonForAdoption"));
+            }
+            if (formData.get("previousChildren") != null) {
+                adoptionForm.setPreviousChildren((Boolean) formData.get("previousChildren"));
+            }
+            if (formData.get("housingType") != null) {
+                adoptionForm.setHousingType((String) formData.get("housingType"));
+            }
+            if (formData.get("employmentStatus") != null) {
+                adoptionForm.setEmploymentStatus((String) formData.get("employmentStatus"));
+            }
+            if (formData.get("referencesContact") != null) {
+                adoptionForm.setReferencesContact((String) formData.get("referencesContact"));
+            }
+            if (formData.get("medicalHistory") != null) {
+                adoptionForm.setMedicalHistory((String) formData.get("medicalHistory"));
+            }
+            if (formData.get("criminalBackgroundCheck") != null) {
+                adoptionForm.setCriminalBackgroundCheck((Boolean) formData.get("criminalBackgroundCheck"));
+            }
+            if (formData.get("homeStudyCompleted") != null) {
+                adoptionForm.setHomeStudyCompleted((Boolean) formData.get("homeStudyCompleted"));
+            }
+            if (formData.get("additionalDocuments") != null) {
+                adoptionForm.setAdditionalDocuments((String) formData.get("additionalDocuments"));
             }
             
-            if (parentData.get("maritalStatus") != null) {
-                updatedParent.setMaritalStatus(Parent.MaritalStatus.valueOf((String) parentData.get("maritalStatus")));
-            }
-            
-            Parent parent = parentService.updateParentProfile(userId, updatedParent);
-            return ResponseEntity.ok(parent);
+            AdoptionRequest request = adoptionRequestService.createAdoptionRequestWithForm(
+                    parentUserId, childId, adoptionForm, parentNotes);
+            return ResponseEntity.ok(request);
         } catch (Exception e) {
             return ResponseEntity.badRequest()
                     .body(new MessageResponse("Error: " + e.getMessage()));
         }
     }
     
-    @PutMapping("/password/{userId}")
-    public ResponseEntity<?> changePassword(@PathVariable Long userId,
-                                          @Valid @RequestBody PasswordChangeRequest request) {
+    @PutMapping("/{id}/status")
+    public ResponseEntity<?> updateRequestStatus(@RequestBody Map<String, Object> statusData,
+                                               @PathVariable Long id) {
         try {
-            parentService.updatePassword(userId, 
-                                       request.getCurrentPassword(), 
-                                       request.getNewPassword());
-            return ResponseEntity.ok(new MessageResponse("Password updated successfully"));
+            Long orphanageUserId = Long.valueOf(statusData.get("orphanageUserId").toString());
+            AdoptionRequest.Status status = AdoptionRequest.Status.valueOf((String) statusData.get("status"));
+            String orphanageNotes = (String) statusData.get("orphanageNotes");
+            
+            AdoptionRequest request = adoptionRequestService.updateRequestStatus(
+                    orphanageUserId, id, status, orphanageNotes);
+            return ResponseEntity.ok(request);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest()
+                    .body(new MessageResponse("Error: " + e.getMessage()));
+        }
+    }
+    
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> cancelRequest(@RequestBody Map<String, Object> requestData,
+                                         @PathVariable Long id) {
+        try {
+            Long parentUserId = Long.valueOf(requestData.get("parentUserId").toString());
+            adoptionRequestService.cancelRequest(parentUserId, id);
+            return ResponseEntity.ok(new MessageResponse("Adoption request cancelled successfully"));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest()
+                    .body(new MessageResponse("Error: " + e.getMessage()));
+        }
+    }
+    
+    @GetMapping("/{id}/form")
+    public ResponseEntity<?> getAdoptionForm(@PathVariable Long id) {
+        try {
+            AdoptionForm form = adoptionRequestService.getAdoptionForm(id)
+                    .orElseThrow(() -> new RuntimeException("Adoption form not found"));
+            return ResponseEntity.ok(form);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest()
+                    .body(new MessageResponse("Error: " + e.getMessage()));
+        }
+    }
+    
+    @PutMapping("/{id}/form")
+    public ResponseEntity<?> updateAdoptionForm(@RequestBody Map<String, Object> requestData,
+                                              @PathVariable Long id,
+                                              @Valid @RequestBody AdoptionForm updatedForm) {
+        try {
+            Long parentUserId = Long.valueOf(requestData.get("parentUserId").toString());
+            AdoptionForm form = adoptionRequestService.updateAdoptionForm(
+                    parentUserId, id, updatedForm);
+            return ResponseEntity.ok(form);
         } catch (Exception e) {
             return ResponseEntity.badRequest()
                     .body(new MessageResponse("Error: " + e.getMessage()));

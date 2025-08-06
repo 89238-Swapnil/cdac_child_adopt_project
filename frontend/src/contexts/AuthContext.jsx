@@ -16,56 +16,58 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Check if user is logged in on app start
     const token = getAuthToken();
-    const userData = getUser();
-    
-    if (token && userData) {
-      setUser(userData);
+    const storedUser = getUser();
+
+    if (token && storedUser) {
+      setUser(storedUser);
     }
-    
+
     setLoading(false);
   }, []);
 
   const login = async (credentials) => {
     try {
-      const response = await authAPI.login(credentials);
-      setUser({
-        id: response.id,
-        email: response.email,
-        role: response.role,
-      });
-      return response;
-    } catch (error) {
-      throw error;
+      const result = await authAPI.login(credentials);
+      const userInfo = {
+        id: result.id,
+        email: result.email,
+        role: result.role,
+      };
+      setUser(userInfo);
+      return result;
+    } catch (err) {
+      throw err;
     }
   };
 
-  const registerParent = async (parentData) => {
+  const registerParent = async (parentInfo) => {
     try {
-      const response = await authAPI.registerParent(parentData);
-      setUser({
-        id: response.id,
-        email: response.email,
-        role: response.role,
-      });
-      return response;
-    } catch (error) {
-      throw error;
+      const result = await authAPI.registerParent(parentInfo);
+      const newUser = {
+        id: result.id,
+        email: result.email,
+        role: result.role,
+      };
+      setUser(newUser);
+      return result;
+    } catch (err) {
+      throw err;
     }
   };
 
-  const registerOrphanage = async (orphanageData) => {
+  const registerOrphanage = async (orphanageInfo) => {
     try {
-      const response = await authAPI.registerOrphanage(orphanageData);
-      setUser({
-        id: response.id,
-        email: response.email,
-        role: response.role,
-      });
-      return response;
-    } catch (error) {
-      throw error;
+      const result = await authAPI.registerOrphanage(orphanageInfo);
+      const newUser = {
+        id: result.id,
+        email: result.email,
+        role: result.role,
+      };
+      setUser(newUser);
+      return result;
+    } catch (err) {
+      throw err;
     }
   };
 
@@ -74,17 +76,11 @@ export const AuthProvider = ({ children }) => {
     setUser(null);
   };
 
-  const isAuthenticated = () => {
-    return !!user && !!getAuthToken();
-  };
+  const isAuthenticated = () => !!user && !!getAuthToken();
 
-  const isParent = () => {
-    return user?.role === 'PARENT';
-  };
+  const isParent = () => user?.role === 'PARENT';
 
-  const isOrphanage = () => {
-    return user?.role === 'ORPHANAGE';
-  };
+  const isOrphanage = () => user?.role === 'ORPHANAGE';
 
   const value = {
     user,
@@ -104,4 +100,3 @@ export const AuthProvider = ({ children }) => {
     </AuthContext.Provider>
   );
 };
-

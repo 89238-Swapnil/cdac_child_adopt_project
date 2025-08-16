@@ -16,6 +16,7 @@ import ManageChildren from './pages/ManageChildren';
 import AdoptionRequests from './pages/AdoptionRequests';
 import Profile from './pages/Profile';
 import ProtectedRoute from './components/ProtectedRoute';
+import { Toaster } from './components/ui/sonner';
 import './App.css';
 
 function App() {
@@ -123,6 +124,7 @@ function App() {
             </Routes>
           </main>
         </div>
+        <Toaster />
       </Router>
     </AuthProvider>
   );

@@ -1,11 +1,14 @@
 import React from 'react';
+import { useAuth } from '../contexts/AuthContext';
+import AdoptionRequestsList from '../components/AdoptionRequestsList';
 
 const AdoptionRequests = () => {
+  const { user } = useAuth();
+const userRole = user?.role || 'parent';
+
   return (
-    <div className="space-y-6">
-      <h1 className="text-3xl font-bold">Adoption Requests</h1>
-      <p className="text-gray-600">Manage adoption requests and applications.</p>
-      {/* Component implementation will be added later */}
+    <div className="container mx-auto px-4 py-8">
+      <AdoptionRequestsList userRole={userRole} />
     </div>
   );
 };

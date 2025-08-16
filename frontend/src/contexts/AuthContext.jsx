@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { getUser, getAuthToken, authAPI } from '../lib/api';
+import { getAuthToken, setUser as setUserInStorage, authAPI } from '../lib/api';
 
 const AuthContext = createContext();
 
@@ -18,10 +18,14 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     // Check if user is logged in on app start
     const token = getAuthToken();
-    const userData = getUser();
+    const userData = localStorage.getItem('user');
     
     if (token && userData) {
-      setUser(userData);
+      try {
+        setUser(JSON.parse(userData));
+      } catch (e) {
+        console.error('Error parsing user data from localStorage:', e);
+      }
     }
     
     setLoading(false);
@@ -30,11 +34,13 @@ export const AuthProvider = ({ children }) => {
   const login = async (credentials) => {
     try {
       const response = await authAPI.login(credentials);
-      setUser({
+      const userData = {
         id: response.id,
         email: response.email,
         role: response.role,
-      });
+      };
+      setUser(userData);
+      setUserInStorage(userData); // Store in localStorage
       return response;
     } catch (error) {
       throw error;
@@ -44,11 +50,13 @@ export const AuthProvider = ({ children }) => {
   const registerParent = async (parentData) => {
     try {
       const response = await authAPI.registerParent(parentData);
-      setUser({
+      const userData = {
         id: response.id,
         email: response.email,
         role: response.role,
-      });
+      };
+      setUser(userData);
+      setUserInStorage(userData);
       return response;
     } catch (error) {
       throw error;
@@ -58,11 +66,13 @@ export const AuthProvider = ({ children }) => {
   const registerOrphanage = async (orphanageData) => {
     try {
       const response = await authAPI.registerOrphanage(orphanageData);
-      setUser({
+      const userData = {
         id: response.id,
         email: response.email,
         role: response.role,
-      });
+      };
+      setUser(userData);
+      setUserInStorage(userData);
       return response;
     } catch (error) {
       throw error;
@@ -72,6 +82,7 @@ export const AuthProvider = ({ children }) => {
   const logout = () => {
     authAPI.logout();
     setUser(null);
+    setUserInStorage(null);
   };
 
   const isAuthenticated = () => {
@@ -86,8 +97,14 @@ export const AuthProvider = ({ children }) => {
     return user?.role === 'ORPHANAGE';
   };
 
+  // Add getUser function for compatibility
+  const getUser = () => {
+    return user;
+  };
+
   const value = {
     user,
+    getUser, // Add this for backward compatibility
     login,
     registerParent,
     registerOrphanage,

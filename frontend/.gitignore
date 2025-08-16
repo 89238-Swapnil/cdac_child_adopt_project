@@ -1,0 +1,61 @@
+# ========================
+# OS FILES
+# ========================
+.DS_Store
+Thumbs.db
+
+# ========================
+# JAVA / SPRING BOOT BACKEND
+# ========================
+/backend6/target/
+/backend6/.idea/
+/backend6/.classpath
+/backend6/.project
+/backend6/.settings/
+*.iml
+*.log
+/frontend/node_modules/
+
+
+# Maven
+.mvn/wrapper/maven-wrapper.jar
+.mvn/wrapper/maven-wrapper.properties
+
+# Gradle (if used)
+.gradle
+build/
+
+# ========================
+# NODE / REACT FRONTEND
+# ========================
+/frontend/node_modules/
+/frontend/dist/
+/frontend/.env.local
+/frontend/.env.development.local
+/frontend/.env.test.local
+/frontend/.env.production.local
+
+# Logs
+/frontend/npm-debug.log*
+/frontend/yarn-debug.log*
+/frontend/yarn-error.log*
+/frontend/pnpm-debug.log*
+
+# Vite cache
+/frontend/.vite
+
+# ========================
+# IDE & EDITOR CONFIG
+# ========================
+.idea/
+.vscode/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+
+# ========================
+# OTHER
+# ========================
+.env
+.env.*

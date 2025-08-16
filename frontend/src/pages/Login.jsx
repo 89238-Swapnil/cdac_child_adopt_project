@@ -44,6 +44,7 @@ const Login = () => {
     try {
       await login(formData);
       // Navigation will be handled by useEffect
+      // If login is successful, the user will be redirected
     } catch (err) {
       setError(err.message || 'Login failed. Please check your credentials.');
     } finally {

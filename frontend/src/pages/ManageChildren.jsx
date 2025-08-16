@@ -3,13 +3,10 @@ import { useAuth } from '../contexts/AuthContext';
 import { childrenAPI } from '../lib/api';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import { Plus, Edit, Trash2, Users } from 'lucide-react';
+import { Plus, Edit, Trash2, Users, AlertCircle } from 'lucide-react';
 import { toast } from 'sonner';
+import ChildForm from '../components/ChildForm';
 
 const ManageChildren = () => {
   const { user } = useAuth();
@@ -18,15 +15,7 @@ const ManageChildren = () => {
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [editingChild, setEditingChild] = useState(null);
-  const [formData, setFormData] = useState({
-    firstName: '',
-    lastName: '',
-    age: '',
-    gender: '',
-    healthStatus: '',
-    description: '',
-    specialNeeds: ''
-  });
+  const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
     fetchChildren();
@@ -35,201 +24,126 @@ const ManageChildren = () => {
   const fetchChildren = async () => {
     try {
       setLoading(true);
+      if (!user || !user.id) {
+        toast.error('User not authenticated');
+        return;
+      }
+      
       const data = await childrenAPI.getMyChildren(user.id);
-      setChildren(data);
+      setChildren(data || []);
     } catch (error) {
-      toast.error('Failed to fetch children');
       console.error('Error fetching children:', error);
+      toast.error(error.message || 'Failed to fetch children');
     } finally {
       setLoading(false);
     }
   };
 
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }));
-  };
-
-  const handleSelectChange = (name, value) => {
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }));
-  };
-
-  const resetForm = () => {
-    setFormData({
-      firstName: '',
-      lastName: '',
-      age: '',
-      gender: '',
-      healthStatus: '',
-      description: '',
-      specialNeeds: ''
-    });
-  };
-
-  const handleAddChild = async (e) => {
-    e.preventDefault();
+  const handleAddChild = async (childData) => {
     try {
-      await childrenAPI.add(user.id, {
-        ...formData,
-        age: parseInt(formData.age)
-      });
+      setSubmitting(true);
+      if (!user || !user.id) {
+        toast.error('User not authenticated');
+        return;
+      }
+
+      // Handle photo upload if present
+      let finalChildData = { ...childData };
+      if (childData.photo) {
+        // If photo is a file, you might want to upload it first
+        // For now, we'll just remove it from the data
+        delete finalChildData.photo;
+      }
+
+      const response = await childrenAPI.add(user.id, finalChildData);
       toast.success('Child added successfully');
       setIsAddDialogOpen(false);
-      resetForm();
       fetchChildren();
     } catch (error) {
-      toast.error('Failed to add child');
       console.error('Error adding child:', error);
+      toast.error(error.message || 'Failed to add child');
+    } finally {
+      setSubmitting(false);
     }
   };
 
-  const handleEditChild = async (e) => {
-    e.preventDefault();
+  const handleEditChild = async (childData) => {
     try {
-      await childrenAPI.update(user.id, editingChild.id, {
-        ...formData,
-        age: parseInt(formData.age)
-      });
+      setSubmitting(true);
+      if (!user || !user.id) {
+        toast.error('User not authenticated');
+        return;
+      }
+
+      if (!editingChild || !editingChild.id) {
+        toast.error('No child selected for editing');
+        return;
+      }
+
+      // Handle photo upload if present
+      let finalChildData = { ...childData };
+      if (childData.photo) {
+        // If photo is a file, you might want to upload it first
+        // For now, we'll just remove it from the data
+        delete finalChildData.photo;
+      }
+
+      await childrenAPI.update(user.id, editingChild.id, finalChildData);
       toast.success('Child updated successfully');
       setIsEditDialogOpen(false);
       setEditingChild(null);
-      resetForm();
       fetchChildren();
     } catch (error) {
-      toast.error('Failed to update child');
       console.error('Error updating child:', error);
+      toast.error(error.message || 'Failed to update child');
+    } finally {
+      setSubmitting(false);
     }
   };
 
   const handleDeleteChild = async (childId) => {
-    if (window.confirm('Are you sure you want to delete this child record?')) {
-      try {
-        await childrenAPI.delete(user.id, childId);
-        toast.success('Child deleted successfully');
-        fetchChildren();
-      } catch (error) {
-        toast.error('Failed to delete child');
-        console.error('Error deleting child:', error);
+    if (!window.confirm('Are you sure you want to delete this child record? This action cannot be undone.')) {
+      return;
+    }
+
+    try {
+      if (!user || !user.id) {
+        toast.error('User not authenticated');
+        return;
       }
+
+      await childrenAPI.delete(user.id, childId);
+      toast.success('Child deleted successfully');
+      fetchChildren();
+    } catch (error) {
+      console.error('Error deleting child:', error);
+      toast.error(error.message || 'Failed to delete child');
     }
   };
 
   const openEditDialog = (child) => {
     setEditingChild(child);
-    setFormData({
-      firstName: child.firstName,
-      lastName: child.lastName,
-      age: child.age.toString(),
-      gender: child.gender,
-      healthStatus: child.healthStatus || '',
-      description: child.description || '',
-      specialNeeds: child.specialNeeds || ''
-    });
     setIsEditDialogOpen(true);
   };
 
-  const ChildForm = ({ onSubmit, isEdit = false }) => (
-    <form onSubmit={onSubmit} className="space-y-4">
-      <div className="grid grid-cols-2 gap-4">
-        <div>
-          <Label htmlFor="firstName">First Name</Label>
-          <Input
-            id="firstName"
-            name="firstName"
-            value={formData.firstName}
-            onChange={handleInputChange}
-            required
-          />
-        </div>
-        <div>
-          <Label htmlFor="lastName">Last Name</Label>
-          <Input
-            id="lastName"
-            name="lastName"
-            value={formData.lastName}
-            onChange={handleInputChange}
-            required
-          />
-        </div>
-      </div>
-      
-      <div className="grid grid-cols-2 gap-4">
-        <div>
-          <Label htmlFor="age">Age</Label>
-          <Input
-            id="age"
-            name="age"
-            type="number"
-            min="0"
-            max="18"
-            value={formData.age}
-            onChange={handleInputChange}
-            required
-          />
-        </div>
-        <div>
-          <Label htmlFor="gender">Gender</Label>
-          <Select value={formData.gender} onValueChange={(value) => handleSelectChange('gender', value)}>
-            <SelectTrigger>
-              <SelectValue placeholder="Select gender" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="MALE">Male</SelectItem>
-              <SelectItem value="FEMALE">Female</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
-      </div>
+  const closeAddDialog = () => {
+    setIsAddDialogOpen(false);
+  };
 
-      <div>
-        <Label htmlFor="healthStatus">Health Status</Label>
-        <Input
-          id="healthStatus"
-          name="healthStatus"
-          value={formData.healthStatus}
-          onChange={handleInputChange}
-          placeholder="e.g., Healthy, Needs medication, etc."
-        />
-      </div>
-
-      <div>
-        <Label htmlFor="description">Description</Label>
-        <Textarea
-          id="description"
-          name="description"
-          value={formData.description}
-          onChange={handleInputChange}
-          placeholder="Brief description about the child"
-          rows={3}
-        />
-      </div>
-
-      <div>
-        <Label htmlFor="specialNeeds">Special Needs</Label>
-        <Textarea
-          id="specialNeeds"
-          name="specialNeeds"
-          value={formData.specialNeeds}
-          onChange={handleInputChange}
-          placeholder="Any special needs or requirements"
-          rows={2}
-        />
-      </div>
-
-      <Button type="submit" className="w-full">
-        {isEdit ? 'Update Child' : 'Add Child'}
-      </Button>
-    </form>
-  );
+  const closeEditDialog = () => {
+    setIsEditDialogOpen(false);
+    setEditingChild(null);
+  };
 
   if (loading) {
-    return <div className="flex justify-center items-center h-64">Loading...</div>;
+    return (
+      <div className="flex justify-center items-center h-64">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
+          <p>Loading children...</p>
+        </div>
+      </div>
+    );
   }
 
   return (
@@ -241,19 +155,23 @@ const ManageChildren = () => {
         </div>
         <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
           <DialogTrigger asChild>
-            <Button onClick={() => resetForm()}>
+            <Button onClick={() => setIsAddDialogOpen(true)}>
               <Plus className="h-4 w-4 mr-2" />
               Add Child
             </Button>
           </DialogTrigger>
-          <DialogContent className="max-w-2xl">
+          <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
             <DialogHeader>
               <DialogTitle>Add New Child</DialogTitle>
               <DialogDescription>
                 Enter the details of the child you want to add to your orphanage.
               </DialogDescription>
             </DialogHeader>
-            <ChildForm onSubmit={handleAddChild} />
+            <ChildForm 
+              onSubmit={handleAddChild}
+              loading={submitting}
+              isEdit={false}
+            />
           </DialogContent>
         </Dialog>
       </div>
@@ -266,32 +184,19 @@ const ManageChildren = () => {
             <p className="text-gray-600 text-center mb-4">
               Start by adding children who need homes to your orphanage.
             </p>
-            <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
-              <DialogTrigger asChild>
-                <Button onClick={() => resetForm()}>
-                  <Plus className="h-4 w-4 mr-2" />
-                  Add First Child
-                </Button>
-              </DialogTrigger>
-              <DialogContent className="max-w-2xl">
-                <DialogHeader>
-                  <DialogTitle>Add New Child</DialogTitle>
-                  <DialogDescription>
-                    Enter the details of the child you want to add to your orphanage.
-                  </DialogDescription>
-                </DialogHeader>
-                <ChildForm onSubmit={handleAddChild} />
-              </DialogContent>
-            </Dialog>
+            <Button onClick={() => setIsAddDialogOpen(true)}>
+              <Plus className="h-4 w-4 mr-2" />
+              Add First Child
+            </Button>
           </CardContent>
         </Card>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {children.map((child) => (
-            <Card key={child.id}>
+            <Card key={child.id} className="hover:shadow-md transition-shadow">
               <CardHeader>
                 <CardTitle className="flex justify-between items-start">
-                  <span>{child.firstName} {child.lastName}</span>
+                  <span className="text-lg">{child.firstName} {child.lastName}</span>
                   <div className="flex space-x-2">
                     <Button
                       variant="outline"
@@ -314,27 +219,46 @@ const ManageChildren = () => {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="space-y-2">
-                  <div>
-                    <strong>Health Status:</strong> {child.healthStatus || 'Not specified'}
-                  </div>
+                <div className="space-y-3">
+                  {child.healthStatus && (
+                    <div>
+                      <strong>Health Status:</strong> {child.healthStatus}
+                    </div>
+                  )}
+                  
                   {child.description && (
                     <div>
-                      <strong>Description:</strong> {child.description}
+                      <strong>Description:</strong> 
+                      <p className="text-sm text-gray-600 mt-1">{child.description}</p>
                     </div>
                   )}
+                  
                   {child.specialNeeds && (
                     <div>
-                      <strong>Special Needs:</strong> {child.specialNeeds}
+                      <strong>Special Needs:</strong> 
+                      <p className="text-sm text-gray-600 mt-1">{child.specialNeeds}</p>
                     </div>
                   )}
+                  
+                  {child.dateOfBirth && (
+                    <div>
+                      <strong>Date of Birth:</strong> {new Date(child.dateOfBirth).toLocaleDateString()}
+                    </div>
+                  )}
+                  
+                  {child.admissionDate && (
+                    <div>
+                      <strong>Admission Date:</strong> {new Date(child.admissionDate).toLocaleDateString()}
+                    </div>
+                  )}
+                  
                   <div className="pt-2">
                     <span className={`inline-block px-2 py-1 rounded-full text-xs font-semibold ${
                       child.isAvailable 
                         ? 'bg-green-100 text-green-800' 
                         : 'bg-red-100 text-red-800'
                     }`}>
-                      {child.isAvailable ? 'Available' : 'Not Available'}
+                      {child.isAvailable ? 'Available for Adoption' : 'Not Available'}
                     </span>
                   </div>
                 </div>
@@ -345,14 +269,21 @@ const ManageChildren = () => {
       )}
 
       <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
-        <DialogContent className="max-w-2xl">
+        <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>Edit Child</DialogTitle>
             <DialogDescription>
-              Update the details of the child.
+              Update the details of {editingChild?.firstName} {editingChild?.lastName}.
             </DialogDescription>
           </DialogHeader>
-          <ChildForm onSubmit={handleEditChild} isEdit={true} />
+          {editingChild && (
+            <ChildForm 
+              onSubmit={handleEditChild}
+              initialData={editingChild}
+              loading={submitting}
+              isEdit={true}
+            />
+          )}
         </DialogContent>
       </Dialog>
     </div>

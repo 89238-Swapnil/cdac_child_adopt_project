@@ -13,9 +13,9 @@ spring:
     name: child-adoption-system
 
   datasource:
-    url: jdbc:mysql://${MYSQL_HOST}:${MYSQL_PORT}/${MYSQL_DATABASE}?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
-    username: ${MYSQL_USER}
-    password: ${MYSQL_PASSWORD}
+    url: jdbc:mysql://localhost:3306/child_adoption_system?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+    username: root
+    password: manager
     driver-class-name: com.mysql.cj.jdbc.Driver
 
   jpa:
@@ -35,12 +35,12 @@ spring:
 
   jackson:
     serialization:
-      FAIL_ON_EMPTY_BEANS: false
+      FAIL_ON_EMPTY_BEANS: false # ✅ This is what you asked for
 
 # JWT Configuration
 jwt:
-  secret: ${JWT_SECRET:your-super-secret-jwt-key}
-  expiration: 86400000
+  secret: your-super-secret-jwt-key-here-make-it-very-long-and-secure-123456789
+  expiration: 86400000 # 24 hours in milliseconds
 
 logging:
   level:
